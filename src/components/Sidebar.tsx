@@ -3,16 +3,12 @@ import {
   FolderKanban, 
   BarChart3, 
   CalendarDays, 
-  BellRing,
-  RotateCcw,
-  Sparkles,
-  CalendarCheck2,
+  RotateCcw, 
+  Sparkles, 
   Target,
-  Type
+  Settings
 } from 'lucide-react';
 import { ActiveTab, Docket } from '../types';
-import { downloadICSFile } from '../utils/calendarSync';
-import { PWAInstallButton } from './PWAInstallButton';
 
 interface SidebarProps {
   activeTab: ActiveTab;
@@ -21,8 +17,9 @@ interface SidebarProps {
   todayUrgentCount: number;
   yearlyTasksCount?: number;
   onResetData: () => void;
-  onEnableNotifications: () => void;
-  notificationPermission: NotificationPermission;
+  onEnableNotifications?: () => void;
+  notificationPermission?: NotificationPermission;
+  onOpenSettings?: () => void;
   onOpenTemplateManager?: () => void;
   onOpenGitHubSync?: () => void;
   onOpenFontSettings?: () => void;
@@ -35,13 +32,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   todayUrgentCount,
   yearlyTasksCount = 0,
   onResetData,
-  onEnableNotifications,
-  notificationPermission,
-  onOpenTemplateManager,
-  onOpenGitHubSync,
+  onOpenSettings,
   onOpenFontSettings,
 }) => {
   const totalDockets = dockets.length;
+
+  const handleOpenSettings = onOpenSettings || onOpenFontSettings;
 
   return (
     <aside className="w-64 shrink-0 bg-[#0B0F19]/95 backdrop-blur-md border-r border-slate-800/90 flex flex-col justify-between h-full sticky top-0 select-none text-slate-300 z-20">
@@ -172,62 +168,34 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
-        {/* Quick Sync & Integrations */}
+        {/* CSS selector 1: Quick Settings & Utilities Container */}
         <div className="pt-4 border-t border-slate-800/90 space-y-2">
-          <div className="px-3 text-[11px] font-bold text-slate-400 tracking-wider uppercase">
-            Tiện ích & Quy trình
+          <div className="px-3 text-[11px] font-bold text-slate-400 tracking-wider uppercase flex items-center justify-between">
+            <span>Tiện ích & Cài đặt</span>
+            <Settings className="w-3 h-3 text-slate-500" />
           </div>
 
-          {/* PWA Desktop App install button */}
-          <div className="w-full">
-            <PWAInstallButton variant="sidebar" />
-          </div>
-
-          {onOpenFontSettings && (
-            <button
-              onClick={onOpenFontSettings}
-              className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-medium text-slate-200 bg-slate-900/60 hover:bg-slate-900 border border-slate-800/80 hover:border-slate-700 rounded-xl transition-all text-left group"
-              title="Tùy chỉnh cỡ chữ & phông chữ Times New Roman"
-            >
-              <div className="w-7 h-7 rounded-lg bg-cyan-950/80 border border-cyan-800/60 text-cyan-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Type className="w-3.5 h-3.5" />
+          {/* Unified Settings Button with Gear Icon */}
+          <button
+            onClick={handleOpenSettings}
+            className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-semibold text-slate-200 bg-slate-900/70 hover:bg-slate-850 hover:text-white border border-slate-800 hover:border-slate-700 rounded-xl transition-all text-left group shadow-xs cursor-pointer active:scale-98"
+            title="Cài đặt hệ thống: Cỡ chữ, Phông Times New Roman, Xuất lịch .ics, Desktop App & Tiện ích"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-slate-800 to-slate-700 border border-slate-600/60 text-blue-400 flex items-center justify-center shrink-0 group-hover:rotate-90 group-hover:text-blue-300 group-hover:border-blue-500/50 transition-all duration-300 shadow-2xs">
+                <Settings className="w-4 h-4" />
               </div>
               <div className="flex flex-col truncate">
-                <span className="leading-tight font-semibold text-slate-200 group-hover:text-white">Cỡ chữ & Phông</span>
-                <span className="text-[10px] text-cyan-400/90 font-serif">Times New Roman</span>
+                <span className="leading-tight font-bold text-slate-100 group-hover:text-white">Cài đặt</span>
+                <span className="text-[10px] text-slate-400">Cỡ chữ, phông & tiện ích</span>
               </div>
-            </button>
-          )}
-
-          <button
-            onClick={() => downloadICSFile(dockets)}
-            className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-medium text-slate-200 bg-slate-900/60 hover:bg-slate-900 border border-slate-800/80 hover:border-slate-700 rounded-xl transition-all text-left group"
-            title="Tải tệp .ics để đồng bộ vào Google Calendar, Apple Calendar, Outlook"
-          >
-            <div className="w-7 h-7 rounded-lg bg-emerald-950/80 border border-emerald-800/60 text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-              <CalendarCheck2 className="w-3.5 h-3.5" />
             </div>
-            <div className="flex flex-col truncate">
-              <span className="leading-tight font-semibold text-slate-200 group-hover:text-white">Xuất Lịch (.ics)</span>
-              <span className="text-[10px] text-slate-400">Đồng bộ lịch cá nhân</span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/80 border border-cyan-800/60 px-1.5 py-0.5 rounded-md font-serif">
+                TNR
+              </span>
             </div>
           </button>
-
-          {notificationPermission !== 'granted' && (
-            <button
-              onClick={onEnableNotifications}
-              className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-medium text-slate-200 bg-slate-900/60 hover:bg-slate-900 border border-slate-800/80 hover:border-slate-700 rounded-xl transition-all text-left group"
-              title="Bật thông báo đẩy nhắc việc trên trình duyệt"
-            >
-              <div className="w-7 h-7 rounded-lg bg-blue-950/80 border border-blue-800/60 text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <BellRing className="w-3.5 h-3.5" />
-              </div>
-              <div className="flex flex-col truncate">
-                <span className="leading-tight font-semibold text-slate-200 group-hover:text-white">Bật nhắc việc</span>
-                <span className="text-[10px] text-slate-400">Thông báo trình duyệt</span>
-              </div>
-            </button>
-          )}
         </div>
       </div>
 
@@ -250,7 +218,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={onResetData}
             title="Khôi phục lại dữ liệu mẫu"
-            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors shrink-0"
+            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors shrink-0 cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>

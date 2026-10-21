@@ -7,7 +7,8 @@ import {
   Download, 
   CalendarDays,
   ShieldAlert,
-  Type
+  Type,
+  Settings
 } from 'lucide-react';
 import { Docket, SmartNotification } from '../types';
 import { PWAInstallButton } from './PWAInstallButton';
@@ -79,11 +80,11 @@ export const Header: React.FC<HeaderProps> = ({
         {onOpenFontSettings && (
           <button
             onClick={onOpenFontSettings}
-            title="Cài đặt cỡ chữ & phông chữ (Mặc định Times New Roman)"
-            className="p-2 text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800 rounded-xl transition-all border border-slate-800/80 hover:border-slate-700 shadow-xs flex items-center gap-1.5"
+            title="Cài đặt hệ thống (Cỡ chữ, Phông Times New Roman, Tiện ích)"
+            className="p-2 text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800 rounded-xl transition-all border border-slate-800/80 hover:border-slate-700 shadow-xs flex items-center gap-1.5 cursor-pointer"
           >
-            <Type className="w-4 h-4 text-cyan-400" />
-            <span className="text-[11px] font-semibold hidden md:inline">Cỡ chữ</span>
+            <Settings className="w-4 h-4 text-blue-400" />
+            <span className="text-[11px] font-semibold hidden md:inline">Cài đặt</span>
           </button>
         )}
 

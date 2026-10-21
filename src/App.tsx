@@ -38,7 +38,7 @@ import { NotificationDrawer } from './components/NotificationDrawer';
 import { BackupModal } from './components/BackupModal';
 import { TemplateManagerModal } from './components/TemplateManagerModal';
 import { GitHubSyncModal } from './components/GitHubSyncModal';
-import { FontSettingsModal } from './components/FontSettingsModal';
+import { SettingsModal } from './components/SettingsModal';
 import { loadWorkflowTemplates, WorkflowTemplate } from './utils/templates';
 import { getStoredFontSettings, saveFontSettings, applyFontSettings } from './utils/fontSettings';
 import { FontSettings } from './types';
@@ -336,10 +336,7 @@ export default function App() {
           todayUrgentCount={todayUrgentCount}
           yearlyTasksCount={yearlyTasks.length}
           onResetData={handleResetData}
-          onEnableNotifications={handleEnableNotifications}
-          notificationPermission={notificationPermission}
-          onOpenTemplateManager={() => setIsGlobalTemplateManagerOpen(true)}
-          onOpenGitHubSync={() => setIsGitHubSyncOpen(true)}
+          onOpenSettings={() => setIsFontSettingsModalOpen(true)}
           onOpenFontSettings={() => setIsFontSettingsModalOpen(true)}
         />
 
@@ -509,12 +506,18 @@ export default function App() {
         />
       )}
 
-      {/* Modal 6: Cài đặt Cỡ chữ & Phông chữ Times New Roman */}
-      <FontSettingsModal
+      {/* Modal 6: Cài đặt hệ thống & Tiện ích (Cỡ chữ, Phông Times New Roman, Xuất lịch, Desktop App, Thông báo) */}
+      <SettingsModal
         isOpen={isFontSettingsModalOpen}
         onClose={() => setIsFontSettingsModalOpen(false)}
         settings={fontSettings}
         onUpdateSettings={handleUpdateFontSettings}
+        dockets={dockets}
+        notificationPermission={notificationPermission}
+        onEnableNotifications={handleEnableNotifications}
+        onOpenTemplateManager={() => setIsGlobalTemplateManagerOpen(true)}
+        onOpenBackupModal={() => setIsBackupModalOpen(true)}
+        onOpenGitHubSync={() => setIsGitHubSyncOpen(true)}
       />
     </div>
   );
