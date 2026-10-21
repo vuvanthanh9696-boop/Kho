@@ -38,7 +38,10 @@ import { NotificationDrawer } from './components/NotificationDrawer';
 import { BackupModal } from './components/BackupModal';
 import { TemplateManagerModal } from './components/TemplateManagerModal';
 import { GitHubSyncModal } from './components/GitHubSyncModal';
+import { FontSettingsModal } from './components/FontSettingsModal';
 import { loadWorkflowTemplates, WorkflowTemplate } from './utils/templates';
+import { getStoredFontSettings, saveFontSettings, applyFontSettings } from './utils/fontSettings';
+import { FontSettings } from './types';
 
 export default function App() {
   const [dockets, setDockets] = useState<Docket[]>(() => loadDockets());
@@ -48,6 +51,18 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isGlobalTemplateManagerOpen, setIsGlobalTemplateManagerOpen] = useState(false);
   const [isGitHubSyncOpen, setIsGitHubSyncOpen] = useState(false);
+  const [isFontSettingsModalOpen, setIsFontSettingsModalOpen] = useState(false);
+  const [fontSettings, setFontSettings] = useState<FontSettings>(() => getStoredFontSettings());
+
+  // Apply font settings on mount and change
+  useEffect(() => {
+    applyFontSettings(fontSettings);
+  }, [fontSettings]);
+
+  const handleUpdateFontSettings = (newSettings: FontSettings) => {
+    setFontSettings(newSettings);
+    saveFontSettings(newSettings);
+  };
 
   // Modals state
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -289,7 +304,7 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen max-h-screen overflow-hidden bg-slate-950 flex flex-col font-sans text-slate-100 selection:bg-blue-600 selection:text-white">
+    <div className="h-screen max-h-screen overflow-hidden bg-slate-950 flex flex-col text-slate-100 selection:bg-blue-600 selection:text-white">
       {/* Top Bar Contract (3 Zones) */}
       <Header
         dockets={dockets}
@@ -307,6 +322,7 @@ export default function App() {
         }}
         onOpenNotifications={() => setIsNotifDrawerOpen(true)}
         onOpenBackupModal={() => setIsBackupModalOpen(true)}
+        onOpenFontSettings={() => setIsFontSettingsModalOpen(true)}
         unreadNotifCount={unreadNotifCount}
       />
 
@@ -324,6 +340,7 @@ export default function App() {
           notificationPermission={notificationPermission}
           onOpenTemplateManager={() => setIsGlobalTemplateManagerOpen(true)}
           onOpenGitHubSync={() => setIsGitHubSyncOpen(true)}
+          onOpenFontSettings={() => setIsFontSettingsModalOpen(true)}
         />
 
         {/* Viewport Content Canvas (CSS selector 2) */}
@@ -491,6 +508,14 @@ export default function App() {
           }}
         />
       )}
+
+      {/* Modal 6: Cài đặt Cỡ chữ & Phông chữ Times New Roman */}
+      <FontSettingsModal
+        isOpen={isFontSettingsModalOpen}
+        onClose={() => setIsFontSettingsModalOpen(false)}
+        settings={fontSettings}
+        onUpdateSettings={handleUpdateFontSettings}
+      />
     </div>
   );
 }

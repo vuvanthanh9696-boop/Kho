@@ -261,3 +261,21 @@ export const DEFAULT_DEPARTMENTS = [
   'Bộ phận Tiếp nhận & Trả kết quả',
   'Đối tác tư vấn / Nhà thầu',
 ];
+
+export type FontFamilyOption = 'times' | 'arial' | 'system';
+
+export interface FontSettings {
+  fontSize: number; // in pixels, default 15
+  fontFamily: FontFamilyOption; // default 'times'
+}
+
+export const DEFAULT_FONT_SETTINGS: FontSettings = {
+  fontSize: 15,
+  fontFamily: 'times',
+};
+
+export const FONT_FAMILY_MAP: Record<FontFamilyOption, string> = {
+  times: '"Times New Roman", Times, Tinos, "Liberation Serif", serif',
+  arial: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+  system: '"Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+};

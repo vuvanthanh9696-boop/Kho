@@ -6,7 +6,8 @@ import {
   FolderGit2, 
   Download, 
   CalendarDays,
-  ShieldAlert
+  ShieldAlert,
+  Type
 } from 'lucide-react';
 import { Docket, SmartNotification } from '../types';
 import { PWAInstallButton } from './PWAInstallButton';
@@ -19,6 +20,7 @@ interface HeaderProps {
   onOpenCreateModal: () => void;
   onOpenNotifications: () => void;
   onOpenBackupModal: () => void;
+  onOpenFontSettings?: () => void;
   unreadNotifCount: number;
 }
 
@@ -28,6 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenCreateModal,
   onOpenNotifications,
   onOpenBackupModal,
+  onOpenFontSettings,
   unreadNotifCount,
 }) => {
   return (
@@ -72,6 +75,17 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Zone 3: Actions & Notifications */}
       <div className="flex items-center gap-2 shrink-0">
         <PWAInstallButton variant="full" />
+
+        {onOpenFontSettings && (
+          <button
+            onClick={onOpenFontSettings}
+            title="Cài đặt cỡ chữ & phông chữ (Mặc định Times New Roman)"
+            className="p-2 text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800 rounded-xl transition-all border border-slate-800/80 hover:border-slate-700 shadow-xs flex items-center gap-1.5"
+          >
+            <Type className="w-4 h-4 text-cyan-400" />
+            <span className="text-[11px] font-semibold hidden md:inline">Cỡ chữ</span>
+          </button>
+        )}
 
         <button
           onClick={onOpenBackupModal}
