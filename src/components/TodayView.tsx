@@ -382,13 +382,6 @@ export const TodayView: React.FC<TodayViewProps> = ({
             </span>
             <span className="text-xs text-rose-300/70 font-medium">hồ sơ</span>
           </div>
-
-          <div className="mt-2.5 pt-2 border-t border-rose-900/40 flex items-center justify-between text-[11px]">
-            <span className={`font-medium transition-colors ${filterType === 'overdue' ? 'text-rose-300 font-semibold' : 'text-slate-400 group-hover:text-rose-300'}`}>
-              {filterType === 'overdue' ? 'Đang lọc • Bấm để hủy' : 'Bấm để lọc'}
-            </span>
-            <ChevronRight className={`w-3.5 h-3.5 text-rose-400 transition-transform ${filterType === 'overdue' ? 'rotate-90 text-rose-300' : 'group-hover:translate-x-0.5'}`} />
-          </div>
           <div className={`absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-rose-500 to-rose-600 ${filterType === 'overdue' ? 'opacity-100' : 'opacity-70'}`} />
         </div>
 
@@ -428,13 +421,6 @@ export const TodayView: React.FC<TodayViewProps> = ({
               {dueTodayDocketsCount}
             </span>
             <span className="text-xs text-amber-300/70 font-medium">hồ sơ</span>
-          </div>
-
-          <div className="mt-2.5 pt-2 border-t border-amber-900/40 flex items-center justify-between text-[11px]">
-            <span className={`font-medium transition-colors ${filterType === 'today' ? 'text-amber-300 font-semibold' : 'text-slate-400 group-hover:text-amber-300'}`}>
-              {filterType === 'today' ? 'Đang lọc • Bấm để hủy' : 'Bấm để lọc'}
-            </span>
-            <ChevronRight className={`w-3.5 h-3.5 text-amber-400 transition-transform ${filterType === 'today' ? 'rotate-90 text-amber-300' : 'group-hover:translate-x-0.5'}`} />
           </div>
           <div className={`absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-amber-500 to-amber-600 ${filterType === 'today' ? 'opacity-100' : 'opacity-70'}`} />
         </div>
@@ -476,13 +462,6 @@ export const TodayView: React.FC<TodayViewProps> = ({
             </span>
             <span className="text-xs text-blue-300/70 font-medium">hồ sơ</span>
           </div>
-
-          <div className="mt-2.5 pt-2 border-t border-blue-900/40 flex items-center justify-between text-[11px]">
-            <span className={`font-medium transition-colors ${filterType === 'upcoming' ? 'text-blue-300 font-semibold' : 'text-slate-400 group-hover:text-blue-300'}`}>
-              {filterType === 'upcoming' ? 'Đang lọc • Bấm để hủy' : 'Bấm để lọc'}
-            </span>
-            <ChevronRight className={`w-3.5 h-3.5 text-blue-400 transition-transform ${filterType === 'upcoming' ? 'rotate-90 text-blue-300' : 'group-hover:translate-x-0.5'}`} />
-          </div>
           <div className={`absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600 ${filterType === 'upcoming' ? 'opacity-100' : 'opacity-70'}`} />
         </div>
 
@@ -522,13 +501,6 @@ export const TodayView: React.FC<TodayViewProps> = ({
               {completedTodayDocketsCount}
             </span>
             <span className="text-xs text-emerald-300/70 font-medium">hồ sơ</span>
-          </div>
-
-          <div className="mt-2.5 pt-2 border-t border-emerald-900/40 flex items-center justify-between text-[11px]">
-            <span className={`font-medium transition-colors ${filterType === 'completed' ? 'text-emerald-300 font-semibold' : 'text-slate-400 group-hover:text-emerald-300'}`}>
-              {filterType === 'completed' ? 'Đang lọc • Bấm để hủy' : 'Bấm để lọc'}
-            </span>
-            <ChevronRight className={`w-3.5 h-3.5 text-emerald-400 transition-transform ${filterType === 'completed' ? 'rotate-90 text-emerald-300' : 'group-hover:translate-x-0.5'}`} />
           </div>
           <div className={`absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600 ${filterType === 'completed' ? 'opacity-100' : 'opacity-70'}`} />
         </div>
