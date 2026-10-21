@@ -328,9 +328,6 @@ export const TodayView: React.FC<TodayViewProps> = ({
               {new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })}
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Nhấn vào các khối cảnh báo bên dưới để lọc và hiển thị ngay các hồ sơ công việc thuộc từng nhóm.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">
