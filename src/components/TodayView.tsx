@@ -16,7 +16,8 @@ import {
   RotateCcw,
   User,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Plus
 } from 'lucide-react';
 import { Docket, DocketStep, PRIORITY_CONFIG, DOCKET_STATUS_CONFIG } from '../types';
 import { getGoogleCalendarUrl } from '../utils/calendarSync';
@@ -317,240 +318,242 @@ export const TodayView: React.FC<TodayViewProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Top Banner / Headline */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3 border-b border-slate-800">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-xl font-bold tracking-tight text-white">
+      {/* Sticky Header Panel: Top Banner + 4 Compact KPI Cards + Filter/View Bar */}
+      <div className="sticky top-0 z-20 bg-[#0A0E17]/95 backdrop-blur-md -mt-5 sm:-mt-6 lg:-mt-8 pt-4 pb-3 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 border-b border-slate-800/80 shadow-md space-y-2.5">
+        {/* Row 1: Top Banner / Headline (Compacted) */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <h1 className="text-base sm:text-lg font-bold tracking-tight text-white truncate">
               Bàn làm việc hôm nay
             </h1>
-            <span className="text-xs font-mono text-cyan-400 bg-cyan-950/80 border border-cyan-800/60 px-2 py-0.5 rounded-md tabular-nums font-semibold">
-              {new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })}
+            <span className="text-[11px] font-mono text-cyan-400 bg-cyan-950/80 border border-cyan-800/60 px-2 py-0.5 rounded-md tabular-nums font-semibold shrink-0">
+              {new Date().toLocaleDateString('vi-VN', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' })}
             </span>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onOpenCreateModal}
-            className="px-3.5 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 active:bg-blue-700 rounded-xl shadow-xs transition-all cursor-pointer"
-          >
-            + Thêm hồ sơ công việc
-          </button>
-        </div>
-      </div>
-
-      {/* KPI Highlight Strip - Compact 3D Tactile Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
-        {/* KPI 1: Overdue (CSS selector 1) */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => handleKpiClick('overdue')}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              handleKpiClick('overdue');
-            }
-          }}
-          title={filterType === 'overdue' ? 'Bấm lại để hủy lọc' : 'Nhấn để lọc hồ sơ quá hạn'}
-          className={`card-3d-interactive p-3.5 sm:p-4 rounded-xl sm:rounded-2xl relative overflow-hidden group cursor-pointer transition-all duration-200 select-none ${
-            filterType === 'overdue'
-              ? 'ring-2 ring-rose-500 ring-offset-2 ring-offset-slate-950 border-rose-500/90 bg-rose-950/40 shadow-[0_8px_20px_rgba(244,63,94,0.3)] -translate-y-0.5'
-              : 'border-slate-800/90 hover:border-rose-500/60 hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(244,63,94,0.18)] active:translate-y-0'
-          }`}
-        >
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] sm:text-xs font-bold text-rose-300 uppercase tracking-wider truncate">
-              Quá hạn xử lý
-            </span>
-            <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform ${
-              filterType === 'overdue'
-                ? 'bg-rose-500/30 border border-rose-400 text-rose-300 scale-105 shadow-[0_0_15px_rgba(244,63,94,0.4)]'
-                : 'bg-rose-500/20 border border-rose-500/30 text-rose-400 group-hover:scale-105'
-            }`}>
-              <AlertTriangle className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-            </div>
-          </div>
-
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono tabular-nums text-rose-400 drop-shadow-xs">
-              {overdueDocketsCount}
-            </span>
-            <span className="text-xs text-rose-300/70 font-medium">hồ sơ</span>
-          </div>
-          <div className={`absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-rose-500 to-rose-600 ${filterType === 'overdue' ? 'opacity-100' : 'opacity-70'}`} />
-        </div>
-
-        {/* KPI 2: Due Today (CSS selector 2) */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => handleKpiClick('today')}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              handleKpiClick('today');
-            }
-          }}
-          title={filterType === 'today' ? 'Bấm lại để hủy lọc' : 'Nhấn để lọc hồ sơ đến hạn hôm nay'}
-          className={`card-3d-interactive p-3.5 sm:p-4 rounded-xl sm:rounded-2xl relative overflow-hidden group cursor-pointer transition-all duration-200 select-none ${
-            filterType === 'today'
-              ? 'ring-2 ring-amber-500 ring-offset-2 ring-offset-slate-950 border-amber-500/90 bg-amber-950/40 shadow-[0_8px_20px_rgba(245,158,11,0.3)] -translate-y-0.5'
-              : 'border-slate-800/90 hover:border-amber-500/60 hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(245,158,11,0.18)] active:translate-y-0'
-          }`}
-        >
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] sm:text-xs font-bold text-amber-300 uppercase tracking-wider truncate">
-              Hạn trong ngày
-            </span>
-            <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform ${
-              filterType === 'today'
-                ? 'bg-amber-500/30 border border-amber-400 text-amber-300 scale-105 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
-                : 'bg-amber-500/20 border border-amber-500/30 text-amber-400 group-hover:scale-105'
-            }`}>
-              <Clock className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-            </div>
-          </div>
-
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono tabular-nums text-amber-400 drop-shadow-xs">
-              {dueTodayDocketsCount}
-            </span>
-            <span className="text-xs text-amber-300/70 font-medium">hồ sơ</span>
-          </div>
-          <div className={`absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-amber-500 to-amber-600 ${filterType === 'today' ? 'opacity-100' : 'opacity-70'}`} />
-        </div>
-
-        {/* KPI 3: Upcoming (CSS selector 3) */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => handleKpiClick('upcoming')}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              handleKpiClick('upcoming');
-            }
-          }}
-          title={filterType === 'upcoming' ? 'Bấm lại để hủy lọc' : 'Nhấn để lọc hồ sơ sắp đến hạn'}
-          className={`card-3d-interactive p-3.5 sm:p-4 rounded-xl sm:rounded-2xl relative overflow-hidden group cursor-pointer transition-all duration-200 select-none ${
-            filterType === 'upcoming'
-              ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-slate-950 border-blue-500/90 bg-blue-950/40 shadow-[0_8px_20px_rgba(59,130,246,0.3)] -translate-y-0.5'
-              : 'border-slate-800/90 hover:border-blue-500/60 hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(59,130,246,0.18)] active:translate-y-0'
-          }`}
-        >
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] sm:text-xs font-bold text-blue-300 uppercase tracking-wider truncate">
-              Sắp đến hạn (48h)
-            </span>
-            <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform ${
-              filterType === 'upcoming'
-                ? 'bg-blue-500/30 border border-blue-400 text-blue-300 scale-105 shadow-[0_0_15px_rgba(59,130,246,0.4)]'
-                : 'bg-blue-500/20 border border-blue-500/30 text-blue-400 group-hover:scale-105'
-            }`}>
-              <Calendar className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-            </div>
-          </div>
-
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono tabular-nums text-blue-400 drop-shadow-xs">
-              {upcomingDocketsCount}
-            </span>
-            <span className="text-xs text-blue-300/70 font-medium">hồ sơ</span>
-          </div>
-          <div className={`absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-blue-500 to-blue-600 ${filterType === 'upcoming' ? 'opacity-100' : 'opacity-70'}`} />
-        </div>
-
-        {/* KPI 4: Done Today (CSS selector 4) */}
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => handleKpiClick('completed')}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              handleKpiClick('completed');
-            }
-          }}
-          title={filterType === 'completed' ? 'Bấm lại để hủy lọc' : 'Nhấn để lọc hồ sơ đã xong'}
-          className={`card-3d-interactive p-3.5 sm:p-4 rounded-xl sm:rounded-2xl relative overflow-hidden group cursor-pointer transition-all duration-200 select-none ${
-            filterType === 'completed'
-              ? 'ring-2 ring-emerald-500 ring-offset-2 ring-offset-slate-950 border-emerald-500/90 bg-emerald-950/40 shadow-[0_8px_20px_rgba(16,185,129,0.3)] -translate-y-0.5'
-              : 'border-slate-800/90 hover:border-emerald-500/60 hover:-translate-y-0.5 hover:shadow-[0_6px_16px_rgba(16,185,129,0.18)] active:translate-y-0'
-          }`}
-        >
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[11px] sm:text-xs font-bold text-emerald-300 uppercase tracking-wider truncate">
-              Đã xong hôm nay
-            </span>
-            <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform ${
-              filterType === 'completed'
-                ? 'bg-emerald-500/30 border border-emerald-400 text-emerald-300 scale-105 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
-                : 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 group-hover:scale-105'
-            }`}>
-              <CheckCircle2 className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-            </div>
-          </div>
-
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono tabular-nums text-emerald-400 drop-shadow-xs">
-              {completedTodayDocketsCount}
-            </span>
-            <span className="text-xs text-emerald-300/70 font-medium">hồ sơ</span>
-          </div>
-          <div className={`absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600 ${filterType === 'completed' ? 'opacity-100' : 'opacity-70'}`} />
-        </div>
-      </div>
-
-      {/* Active Filter Notice Bar & View Switcher */}
-      <div className="card-3d p-3.5 md:p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-slate-800/90">
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <span className="text-xs text-slate-400 flex items-center gap-1.5 font-medium">
-            <Filter className="w-3.5 h-3.5 text-cyan-400" />
-            Đang lọc:
-          </span>
-          <span className={`text-xs font-bold px-2.5 py-1 rounded-xl border ${filterLabels[filterType]?.badgeBg} ${filterLabels[filterType]?.color}`}>
-            {filterLabels[filterType]?.title}
-          </span>
-          <span className="text-xs text-slate-400 font-medium">
-            ({groupedDockets.length} hồ sơ)
-          </span>
-          {filterType !== 'all' && (
+          <div className="flex items-center gap-2 shrink-0">
             <button
-              onClick={() => setFilterType('all')}
-              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors ml-1 cursor-pointer"
+              onClick={onOpenCreateModal}
+              className="px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 active:bg-blue-700 rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
             >
-              <RotateCcw className="w-3 h-3" />
-              <span>Xem tất cả</span>
+              <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>Thêm hồ sơ</span>
             </button>
-          )}
+          </div>
         </div>
 
-        {/* View switcher: By Docket vs By Task */}
-        <div className="flex items-center gap-1.5 p-1 inner-groove rounded-xl self-start sm:self-auto">
-          <button
-            onClick={() => setViewBy('dockets')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all cursor-pointer ${
-              viewBy === 'dockets'
-                ? 'bg-gradient-to-b from-blue-600 to-blue-700 text-white font-bold shadow-xs'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium'
+        {/* Row 2: KPI Highlight Strip (Compacted 4 Cards) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
+          {/* KPI 1: Overdue */}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => handleKpiClick('overdue')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleKpiClick('overdue');
+              }
+            }}
+            title={filterType === 'overdue' ? 'Bấm lại để hủy lọc' : 'Nhấn để lọc hồ sơ quá hạn'}
+            className={`card-3d-interactive px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl relative overflow-hidden group cursor-pointer transition-all duration-150 select-none ${
+              filterType === 'overdue'
+                ? 'ring-2 ring-rose-500 ring-offset-1 ring-offset-slate-950 border-rose-500 bg-rose-950/50 shadow-[0_4px_14px_rgba(244,63,94,0.3)]'
+                : 'border-slate-800/90 hover:border-rose-500/60 hover:bg-rose-950/20 active:translate-y-0'
             }`}
           >
-            <FolderKanban className="w-3.5 h-3.5" />
-            <span>Theo Hồ sơ ({groupedDockets.length})</span>
-          </button>
-          <button
-            onClick={() => setViewBy('tasks')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg transition-all cursor-pointer ${
-              viewBy === 'tasks'
-                ? 'bg-gradient-to-b from-blue-600 to-blue-700 text-white font-bold shadow-xs'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium'
+            <div className="flex items-center justify-between gap-1.5">
+              <span className="text-[11px] font-bold text-rose-300 uppercase tracking-wider truncate">
+                Quá hạn
+              </span>
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-transform ${
+                filterType === 'overdue'
+                  ? 'bg-rose-500/30 text-rose-300'
+                  : 'bg-rose-500/15 text-rose-400 group-hover:scale-105'
+              }`}>
+                <AlertTriangle className="w-3.5 h-3.5" />
+              </div>
+            </div>
+
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-extrabold font-mono tabular-nums text-rose-400 leading-tight">
+                {overdueDocketsCount}
+              </span>
+              <span className="text-[11px] text-rose-300/70 font-medium">hồ sơ</span>
+            </div>
+            <div className={`absolute inset-x-0 bottom-0 h-0.5 bg-rose-500 ${filterType === 'overdue' ? 'opacity-100' : 'opacity-60'}`} />
+          </div>
+
+          {/* KPI 2: Due Today */}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => handleKpiClick('today')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleKpiClick('today');
+              }
+            }}
+            title={filterType === 'today' ? 'Bấm lại để hủy lọc' : 'Nhấn để lọc hồ sơ đến hạn hôm nay'}
+            className={`card-3d-interactive px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl relative overflow-hidden group cursor-pointer transition-all duration-150 select-none ${
+              filterType === 'today'
+                ? 'ring-2 ring-amber-500 ring-offset-1 ring-offset-slate-950 border-amber-500 bg-amber-950/50 shadow-[0_4px_14px_rgba(245,158,11,0.3)]'
+                : 'border-slate-800/90 hover:border-amber-500/60 hover:bg-amber-950/20 active:translate-y-0'
             }`}
           >
-            <ListTodo className="w-3.5 h-3.5" />
-            <span>Theo từng Nhiệm vụ ({filteredTasks.length})</span>
-          </button>
+            <div className="flex items-center justify-between gap-1.5">
+              <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider truncate">
+                Hạn hôm nay
+              </span>
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-transform ${
+                filterType === 'today'
+                  ? 'bg-amber-500/30 text-amber-300'
+                  : 'bg-amber-500/15 text-amber-400 group-hover:scale-105'
+              }`}>
+                <Clock className="w-3.5 h-3.5" />
+              </div>
+            </div>
+
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-extrabold font-mono tabular-nums text-amber-400 leading-tight">
+                {dueTodayDocketsCount}
+              </span>
+              <span className="text-[11px] text-amber-300/70 font-medium">hồ sơ</span>
+            </div>
+            <div className={`absolute inset-x-0 bottom-0 h-0.5 bg-amber-500 ${filterType === 'today' ? 'opacity-100' : 'opacity-60'}`} />
+          </div>
+
+          {/* KPI 3: Upcoming */}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => handleKpiClick('upcoming')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleKpiClick('upcoming');
+              }
+            }}
+            title={filterType === 'upcoming' ? 'Bấm lại để hủy lọc' : 'Nhấn để lọc hồ sơ sắp đến hạn'}
+            className={`card-3d-interactive px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl relative overflow-hidden group cursor-pointer transition-all duration-150 select-none ${
+              filterType === 'upcoming'
+                ? 'ring-2 ring-blue-500 ring-offset-1 ring-offset-slate-950 border-blue-500 bg-blue-950/50 shadow-[0_4px_14px_rgba(59,130,246,0.3)]'
+                : 'border-slate-800/90 hover:border-blue-500/60 hover:bg-blue-950/20 active:translate-y-0'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-1.5">
+              <span className="text-[11px] font-bold text-blue-300 uppercase tracking-wider truncate">
+                Sắp đến hạn
+              </span>
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-transform ${
+                filterType === 'upcoming'
+                  ? 'bg-blue-500/30 text-blue-300'
+                  : 'bg-blue-500/15 text-blue-400 group-hover:scale-105'
+              }`}>
+                <Calendar className="w-3.5 h-3.5" />
+              </div>
+            </div>
+
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-extrabold font-mono tabular-nums text-blue-400 leading-tight">
+                {upcomingDocketsCount}
+              </span>
+              <span className="text-[11px] text-blue-300/70 font-medium">hồ sơ</span>
+            </div>
+            <div className={`absolute inset-x-0 bottom-0 h-0.5 bg-blue-500 ${filterType === 'upcoming' ? 'opacity-100' : 'opacity-60'}`} />
+          </div>
+
+          {/* KPI 4: Done Today */}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => handleKpiClick('completed')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleKpiClick('completed');
+              }
+            }}
+            title={filterType === 'completed' ? 'Bấm lại để hủy lọc' : 'Nhấn để lọc hồ sơ đã xong'}
+            className={`card-3d-interactive px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl relative overflow-hidden group cursor-pointer transition-all duration-150 select-none ${
+              filterType === 'completed'
+                ? 'ring-2 ring-emerald-500 ring-offset-1 ring-offset-slate-950 border-emerald-500 bg-emerald-950/50 shadow-[0_4px_14px_rgba(16,185,129,0.3)]'
+                : 'border-slate-800/90 hover:border-emerald-500/60 hover:bg-emerald-950/20 active:translate-y-0'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-1.5">
+              <span className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider truncate">
+                Đã xong
+              </span>
+              <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-transform ${
+                filterType === 'completed'
+                  ? 'bg-emerald-500/30 text-emerald-300'
+                  : 'bg-emerald-500/15 text-emerald-400 group-hover:scale-105'
+              }`}>
+                <CheckCircle2 className="w-3.5 h-3.5" />
+              </div>
+            </div>
+
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className="text-xl sm:text-2xl font-extrabold font-mono tabular-nums text-emerald-400 leading-tight">
+                {completedTodayDocketsCount}
+              </span>
+              <span className="text-[11px] text-emerald-300/70 font-medium">hồ sơ</span>
+            </div>
+            <div className={`absolute inset-x-0 bottom-0 h-0.5 bg-emerald-500 ${filterType === 'completed' ? 'opacity-100' : 'opacity-60'}`} />
+          </div>
+        </div>
+
+        {/* Row 3: Active Filter Notice Bar & View Switcher (Compacted) */}
+        <div className="card-3d px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 border border-slate-800/90">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[11px] text-slate-400 flex items-center gap-1 font-medium">
+              <Filter className="w-3 h-3 text-cyan-400" />
+              Lọc:
+            </span>
+            <span className={`text-[11px] font-bold px-2 py-0.5 rounded-lg border ${filterLabels[filterType]?.badgeBg} ${filterLabels[filterType]?.color}`}>
+              {filterLabels[filterType]?.title}
+            </span>
+            <span className="text-[11px] text-slate-400 font-medium">
+              ({groupedDockets.length} hồ sơ)
+            </span>
+            {filterType !== 'all' && (
+              <button
+                onClick={() => setFilterType('all')}
+                className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-md border border-slate-700 transition-colors ml-1 cursor-pointer"
+              >
+                <RotateCcw className="w-2.5 h-2.5" />
+                <span>Xem tất cả</span>
+              </button>
+            )}
+          </div>
+
+          {/* View switcher: By Docket vs By Task */}
+          <div className="flex items-center gap-1 p-0.5 inner-groove rounded-lg self-start sm:self-auto shrink-0">
+            <button
+              onClick={() => setViewBy('dockets')}
+              className={`flex items-center gap-1.5 px-2.5 py-1 text-[11px] rounded-md transition-all cursor-pointer ${
+                viewBy === 'dockets'
+                  ? 'bg-gradient-to-b from-blue-600 to-blue-700 text-white font-bold shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium'
+              }`}
+            >
+              <FolderKanban className="w-3 h-3" />
+              <span>Theo Hồ sơ ({groupedDockets.length})</span>
+            </button>
+            <button
+              onClick={() => setViewBy('tasks')}
+              className={`flex items-center gap-1.5 px-2.5 py-1 text-[11px] rounded-md transition-all cursor-pointer ${
+                viewBy === 'tasks'
+                  ? 'bg-gradient-to-b from-blue-600 to-blue-700 text-white font-bold shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium'
+              }`}
+            >
+              <ListTodo className="w-3 h-3" />
+              <span>Theo Nhiệm vụ ({filteredTasks.length})</span>
+            </button>
+          </div>
         </div>
       </div>
 
