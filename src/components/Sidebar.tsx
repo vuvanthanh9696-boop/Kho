@@ -6,10 +6,8 @@ import {
   BellRing,
   RotateCcw,
   Sparkles,
-  Layers,
   CalendarCheck2,
   Target,
-  Github,
   Type
 } from 'lucide-react';
 import { ActiveTab, Docket } from '../types';
@@ -184,38 +182,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="w-full">
             <PWAInstallButton variant="sidebar" />
           </div>
-
-          {onOpenTemplateManager && (
-            <button
-              onClick={onOpenTemplateManager}
-              className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-medium text-slate-200 bg-slate-900/60 hover:bg-slate-900 border border-slate-800/80 hover:border-slate-700 rounded-xl transition-all text-left group"
-              title="Quản lý bộ mẫu quy trình chuẩn hóa nhiều bước"
-            >
-              <div className="w-7 h-7 rounded-lg bg-indigo-950/80 border border-indigo-800/60 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Layers className="w-3.5 h-3.5" />
-              </div>
-              <div className="flex flex-col truncate">
-                <span className="leading-tight font-semibold text-slate-200 group-hover:text-white">Bộ mẫu quy trình</span>
-                <span className="text-[10px] text-slate-400">Tùy biến bước con mẫu</span>
-              </div>
-            </button>
-          )}
-
-          {onOpenGitHubSync && (
-            <button
-              onClick={onOpenGitHubSync}
-              className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-medium text-slate-200 bg-slate-900/60 hover:bg-slate-900 border border-slate-800/80 hover:border-slate-700 rounded-xl transition-all text-left group"
-              title="Đồng bộ mã nguồn và dữ liệu sang GitHub"
-            >
-              <div className="w-7 h-7 rounded-lg bg-purple-950/80 border border-purple-800/60 text-purple-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Github className="w-3.5 h-3.5" />
-              </div>
-              <div className="flex flex-col truncate">
-                <span className="leading-tight font-semibold text-slate-200 group-hover:text-white">Đồng bộ GitHub</span>
-                <span className="text-[10px] text-slate-400">Đẩy code & cập nhật web</span>
-              </div>
-            </button>
-          )}
 
           {onOpenFontSettings && (
             <button
